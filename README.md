@@ -1,164 +1,487 @@
-# Dograh AI
+# 🎙️ Audexly - Voice AI Platform
 
-<h3 align="center">⭐ <strong>If you find value in this project, please STAR the Github repository to help others discover our FOSS platform!</strong></h3>
+> Building a commercial Voice AI SaaS platform based on Dograh, optimized for the Indian market.
 
-<p align="center">
-  <a href="https://docs.dograh.com">
-    <img src="https://img.shields.io/badge/docs-https://docs.dograh.com-blue.svg" alt="Docs: https://docs.dograh.com">
-  </a>
-  <a href="https://deepwiki.com/dograh-hq/dograh">
-    <img src="https://deepwiki.com/badge.svg" alt="Deepwiki: https://deepwiki.com/dograh-hq/dograh">
-  </a>
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/license-BSD%202--Clause-blue.svg" alt="License: BSD 2-Clause">
-  </a>
-  <a href="https://join.slack.com/t/dograh-community/shared_invite/zt-3czr47sw5-MSg1J0kJ7IMPOCHF~03auQ">
-    <img src="https://img.shields.io/badge/chat-on%20Slack-4A154B?logo=slack" alt="Slack Community">
-  </a>
-  <a href="https://www.docker.com/">
-    <img src="https://img.shields.io/badge/docker-ready-blue?logo=docker" alt="Docker Ready">
-  </a>
-</p>
+---
 
-**The open-source alternative to Vapi** - Dograh helps you build your own voice agents with an easy drag-and-drop workflow builder. It's the fastest way to build voice AI agents - from zero to working bot in under 2 minutes (our hard SLA standards).
+## 📋 Table of Contents
 
-- **100% open source**, self-hostable platform - no vendor lock-in, unlike proprietary solutions like Vapi
-- **Full control & transparency** - every line of code is open, with built-in AI testing personas and flexible LLM/TTS/STT integration
-- **Maintained by YC alumni and exit founders**, ensuring the future of voice AI stays open, not monopolized
+1. [Project Overview](#-project-overview)
+2. [What We've Done](#-what-weve-done)
+3. [Current Status](#-current-status)
+4. [Technology Stack](#-technology-stack)
+5. [Architecture](#-architecture)
+6. [Phase 0: Testing (Current)](#-phase-0-testing-current)
+7. [Future Phases](#-future-phases)
+8. [How to Run](#-how-to-run)
+9. [Files & Structure](#-files--structure)
+10. [Roadmap](#-roadmap)
 
-## 🎥 Demo Video
+---
 
-<div align="center">
-  <a href="https://www.tella.tv/video/cmgbysbsz00kw0bjm2qnc5f1d/view">
-    <img src="docs/images/video_thumbnail_1.png" alt="Watch Dograh AI Demo Video" width="80%" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-  </a>
-  <br>
-  <em>Click to watch a 2-minute demo of Dograh AI in action</em>
-</div>
+## 🎯 Project Overview
 
-## 🚀 Get Started
+### What is Audexly?
 
-##### Download and setup Dograh on your Local Machine
+Audexly is a **Voice AI SaaS Platform** that enables businesses to deploy AI-powered voice agents for:
+- 📞 **Customer Support** - 24/7 automated support calls
+- 💼 **Sales Outreach** - Lead qualification and follow-ups
+- 📊 **Surveys** - Automated feedback collection
+- ⏰ **Reminders** - Appointment confirmations and notifications
 
-> **Note**
-> We collect anonymous usage data to improve the product. You can opt out by setting the `ENABLE_TELEMETRY` to `false` in the below command.
+### Why Audexly?
 
-> **Note**
-> If you wish to run the platform on a remote server instead, checkout our [Documentation](https://docs.dograh.com/deployment/docker#option-2:-remote-server-deployment)
+| Problem | Audexly Solution |
+|---------|------------------|
+| Expensive call centers | AI agents at fraction of cost |
+| Limited working hours | 24/7 availability |
+| Inconsistent quality | Consistent, trained AI responses |
+| Language barriers | Multi-language support (Hindi/English) |
+| Scaling challenges | Instant scaling with AI |
 
-```bash
-curl -o docker-compose.yaml https://raw.githubusercontent.com/dograh-hq/dograh/main/docker-compose.yaml && REGISTRY=ghcr.io/dograh-hq ENABLE_TELEMETRY=true docker compose up --pull always
+### Target Market
+
+- **India-first** with Exotel telephony
+- **SMBs and Enterprises** needing voice automation
+- **Industries**: Healthcare, E-commerce, Banking, Real Estate
+
+---
+
+## ✅ What We've Done
+
+### Session Summary (January 18, 2026)
+
+#### 1. Business Analysis & Planning
+- ✅ Analyzed Dograh repository for commercial viability
+- ✅ Confirmed **BSD 2-Clause License** allows commercial use
+- ✅ Identified all telemetry points (Sentry, PostHog)
+- ✅ Created business analysis document
+
+#### 2. Repository Setup
+- ✅ Forked Dograh to: `github.com/the-sage-00/dograh-rishi`
+- ✅ Cloned with Pipecat submodule
+- ✅ Created `audexly/` working directory
+
+#### 3. Configuration & Security
+- ✅ Created `docker-compose.audexly.yaml` with **ALL TELEMETRY DISABLED**
+- ✅ Created `.env.audexly.example` template
+- ✅ Created `.env` with your actual API keys (not in git)
+- ✅ Removed Sentry DSN and PostHog keys from config
+
+#### 4. Documentation Created
+- ✅ `AUDEXLY_SETUP_GUIDE.md` - Step-by-step setup
+- ✅ `docs/EXOTEL_INTEGRATION_GUIDE.md` - Exotel configuration
+- ✅ `docs/EXOTEL_INTEGRATION_TODO.md` - Remaining work
+- ✅ `DOGRAH_BUSINESS_ANALYSIS.md` - Business viability analysis
+
+#### 5. Voice Agent Prompts
+Created 5 professional prompt templates:
+- ✅ `prompts/test_agent.md` - Initial testing
+- ✅ `prompts/sales_agent.md` - Outbound sales
+- ✅ `prompts/support_agent.md` - Customer support
+- ✅ `prompts/survey_agent.md` - Feedback collection
+- ✅ `prompts/appointment_reminder.md` - Reminders
+
+#### 6. Exotel Integration (Partial)
+- ✅ Created `ExotelProvider` class in backend
+- ✅ Updated telephony factory to include Exotel
+- ⏳ Transport and pipeline integration pending
+
+#### 7. Docker Deployment
+- ✅ Started all services with `docker compose`
+- ✅ Verified dashboard accessible at http://localhost:3010
+- ✅ Cloudflare tunnel running for webhook access
+
+---
+
+## 📊 Current Status
+
+### Services Running
+
+| Service | URL | Status |
+|---------|-----|--------|
+| Dashboard UI | http://localhost:3010 | ✅ Running |
+| API Backend | http://localhost:8000 | ✅ Healthy |
+| API Docs | http://localhost:8000/docs | ✅ Available |
+| PostgreSQL | localhost:5432 | ✅ Healthy |
+| Redis | localhost:6379 | ✅ Healthy |
+| MinIO | http://localhost:9001 | ✅ Running |
+| Cloudflare Tunnel | *.trycloudflare.com | ✅ Active |
+
+### Feature Status
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Web Call (WebRTC)** | ✅ Ready | Test voice agents in browser |
+| **Twilio Telephony** | ✅ Ready | Built into Dograh |
+| **Vonage Telephony** | ✅ Ready | Built into Dograh |
+| **Exotel Telephony** | 🔄 50% | Provider created, needs transport |
+| **OpenAI LLM** | ✅ Ready | Configure in Models |
+| **Sarvam STT/TTS** | ✅ Ready | Configure in Models |
+| **Telemetry** | ✅ Disabled | No data to external services |
+
+### API Keys Configured
+
+```
+✅ OpenAI: sk-proj-euw4Rszw6Y8G... (in .env)
+✅ Sarvam: sk_f5xrqolc_JQhTwUSm... (in .env)
+✅ Exotel: callmate4 / 6965b8a... (in .env)
 ```
 
-> **Note**
-> First startup may take 2-3 minutes to download all images. Once running, open http://localhost:3010 to create your first AI voice assistant!
-> For common issues and solutions, see 🔧 **[Troubleshooting](docs/troubleshooting.md)**.
+---
 
-### 🎙️ Your First Voice Bot
+## 🛠️ Technology Stack
 
-1. **Open Dashboard**: Launch [http://localhost:3010](http://localhost:3010) on your browser
-2. **Choose Call Type**: Select **Inbound** or **Outbound** calling.
-3. **Name Your Bot**: Use a short two-word name (e.g., _Lead Qualification_).
-4. **Describe Use Case**: In 5–10 words (e.g., _Screen insurance form submissions for purchase intent_).
-5. **Launch**: Your bot is ready! Open the bot and click **Web Call** to talk to it.
-6. **No API Keys Needed**: We auto-generate Dograh API keys so you can start immediately. You can switch to your own keys anytime.
-7. **Default Access**: Includes Dograh’s own LLMs, STT, and TTS stack by default.
-8. **Bring Your Own Keys**: Optionally connect your own API keys for LLMs, STT, TTS, or telephony providers like Twilio.
+### Your Stack (Audexly)
 
-## Quick Summary
+| Component | Technology | Why |
+|-----------|------------|-----|
+| **Telephony** | Exotel | India-optimized, local numbers |
+| **STT** | Sarvam AI | Best Hindi/English accuracy |
+| **TTS** | Sarvam AI | Natural Indian voices |
+| **LLM** | OpenAI GPT-4o-mini | Fast, cost-effective, smart |
+| **Frontend** | Next.js + TailwindCSS | Modern, responsive UI |
+| **Backend** | FastAPI (Python) | Fast, async, well-structured |
+| **Voice Engine** | Pipecat | Modular, low-latency pipeline |
+| **Database** | PostgreSQL | Reliable, feature-rich |
+| **Cache** | Redis | Fast session/cache storage |
+| **Storage** | MinIO (S3-compatible) | Call recordings, files |
 
-⚡ **Open-source alternative to Vapi** - 2-minute setup with hard SLA standards
+### Dograh Foundation
 
-- 🔧 **No vendor lock-in**: Self-hostable platform vs proprietary SaaS solutions
-- 🤖 **AI Testing Personas**: Test your bots with LoopTalk AI that mimics real customer interactions
-- 🔓 **100% Open Source**: Every line of code is open - no hidden logic, no black boxes (unlike Vapi)
-- 🔄 **Flexible Integration**: Bring your own LLM, TTS, or STT - or use Dograh's APIs
-- ☁️ **Deploy anywhere**: Self-host or use our hosted version at app.dograh.com
+| Component | Status |
+|-----------|--------|
+| Multi-tenant architecture | ✅ Built-in |
+| User/Organization management | ✅ Built-in |
+| Workflow builder (visual) | ✅ Built-in |
+| Call recording & transcription | ✅ Built-in |
+| Analytics & usage tracking | ✅ Built-in |
+| Campaign management | ✅ Built-in |
+| API key management | ✅ Built-in |
 
-## Features
+---
 
-### Voice Capabilities
+## 🏗️ Architecture
 
-- Telephony: Built-in telephony integration like Twilio, Vonage, Vobiz, Cloudonix (easily add others)
-- Languages: English support (expandable to other languages)
-- Custom Models: Bring your own TTS/STT models
-- Real-time Processing: Low-latency voice interactions
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              AUDEXLY PLATFORM                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                         FRONTEND (Next.js)                          │    │
+│  │  • Dashboard & Analytics        • Workflow Builder                  │    │
+│  │  • Model Configuration          • Campaign Management               │    │
+│  │  • User Management              • Telephony Configuration           │    │
+│  │                                                                     │    │
+│  │  URL: http://localhost:3010                                         │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                                      │                                       │
+│                                      ▼                                       │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                         BACKEND (FastAPI)                           │    │
+│  │  • REST API                      • WebSocket Handlers               │    │
+│  │  • Authentication                • Telephony Routes                 │    │
+│  │  • Database Operations           • Pipeline Orchestration           │    │
+│  │                                                                     │    │
+│  │  URL: http://localhost:8000                                         │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+│                    │                 │                    │                  │
+│         ┌─────────┴──────┐   ┌──────┴──────┐   ┌────────┴────────┐        │
+│         ▼                ▼   ▼              ▼   ▼                ▼        │
+│  ┌────────────┐   ┌────────────┐   ┌────────────┐   ┌────────────────┐   │
+│  │ PostgreSQL │   │   Redis    │   │   MinIO    │   │    Pipecat     │   │
+│  │ (Database) │   │  (Cache)   │   │ (Storage)  │   │ (Voice Engine) │   │
+│  │            │   │            │   │            │   │                │   │
+│  │ • Users    │   │ • Sessions │   │ • Recordings│  │ • STT Pipeline │   │
+│  │ • Workflows│   │ • Cache    │   │ • Transcripts│ │ • LLM Pipeline │   │
+│  │ • Calls    │   │ • Queues   │   │ • Files     │  │ • TTS Pipeline │   │
+│  └────────────┘   └────────────┘   └────────────┘   └────────────────┘   │
+│                                                              │             │
+│                                                              ▼             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                     EXTERNAL SERVICES (Your Keys)                   │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐   ┌─────────────┐   ┌─────────────────────────┐  │   │
+│  │  │   EXOTEL    │   │  SARVAM AI  │   │        OPENAI           │  │   │
+│  │  │ (Telephony) │   │ (STT + TTS) │   │        (LLM)            │  │   │
+│  │  │             │   │             │   │                         │  │   │
+│  │  │ • Inbound   │   │ • saarika   │   │ • gpt-4o-mini           │  │   │
+│  │  │ • Outbound  │   │ • bulbul    │   │ • Context management    │  │   │
+│  │  │ • AgentStream│  │             │   │                         │  │   │
+│  │  └─────────────┘   └─────────────┘   └─────────────────────────┘  │   │
+│  │                                                                     │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
-### Developer Experience
+---
 
-- Zero Config Start: Auto-generated API keys for instant testing
-- Python-Based: Built on Python for easy customization
-- Docker-First: Containerized for consistent deployments
-- Modular Architecture: Swap components as needed
+## 🧪 Phase 0: Testing (Current)
 
-### Testing & Quality
+### Objective
+Test the core voice agent locally until:
+- ✅ Latency < 2-3 seconds response
+- ✅ Prompts work perfectly
+- ✅ Call quality is production-ready
 
-- LoopTalk (Beta): Create AI personas to test your voice agents
-- Workflow Testing: Test specific workflow IDs with automated calls
-- Real-world Simulation: AI personas that mimic actual customer behavior
+### How to Test NOW
 
-## Architecture
+#### 1. Start Services
+```powershell
+cd c:\Users\saini\OneDrive\Desktop\onelastmore\audexly
+docker compose -f docker-compose.audexly.yaml up -d
+```
 
-Architecture diagram _(coming soon)_
+#### 2. Open Dashboard
+Navigate to: http://localhost:3010
 
-## Deployment Options
+#### 3. Configure API Keys (via UI)
+1. Go to **Models** in sidebar
+2. Add your OpenAI key
+3. Add your Sarvam key
 
-### Local Development
+#### 4. Create a Voice Agent
+1. Click **"Create Voice Agent"**
+2. Choose **Inbound** for testing
+3. Use this test prompt:
 
-Refer [Local Setup](https://docs.dograh.com/contribution/setup)
+```
+You are a friendly AI assistant testing voice calls.
 
-### Self-Hosted Deployment
+Rules:
+1. Keep responses SHORT - 1-2 sentences only
+2. Be helpful and conversational
+3. If asked your name, say "I'm Alex, your AI assistant"
 
-For detailed deployment instructions including remote server setup with HTTPS, see our [Docker Deployment Guide](https://docs.dograh.com/deployment/docker).
+Start by saying: "Hello! I'm Alex. How can I help you today?"
+```
 
-### Production (Self-Hosted)
+#### 5. Test with Web Call
+1. Open your workflow
+2. Click **"Web Call"** button
+3. Allow microphone access
+4. Start talking!
 
-Production guide coming soon. [Drop in a message](https://join.slack.com/t/dograh-community/shared_invite/zt-3czr47sw5-MSg1J0kJ7IMPOCHF~03auQ) for assistance.
+### Metrics to Track
 
-### Cloud Version
+| Metric | Target | How to Measure |
+|--------|--------|----------------|
+| First response time | < 2s | Stopwatch from end of speech |
+| Turn-around time | < 3s | Full response cycle |
+| STT accuracy | > 95% | Compare transcript to speech |
+| Natural conversation | Subjective | Does it feel smooth? |
 
-Visit [https://www.dograh.com](https://www.dograh.com/) for our managed cloud offering.
+---
 
-## 📚Documentation
+## 🚀 Future Phases
 
-You can go to [https://docs.dograh.com](https://docs.dograh.com/) for our documentation.
+### Phase 1: Core Platform (2-3 weeks)
+- [ ] Complete Exotel integration
+- [ ] Custom branding (rename Dograh → Audexly)
+- [ ] User authentication polish
+- [ ] Basic billing setup
 
-## 🤝Community & Support
+### Phase 2: Production Ready (2-3 weeks)  
+- [ ] Production deployment (AWS/DigitalOcean)
+- [ ] SSL certificates
+- [ ] Domain setup
+- [ ] Payment integration (Razorpay)
 
-- GitHub Issues: Report bugs or request features
-- Slack: Our Slack community is not just for support — it’s the cornerstone of Dograh AI contributions. Here, you can:
-  - Connect with maintainers and other contributors
-  - Discuss issues and features before coding
-  - Get help with setup and debugging
-  - Stay up to date with contribution sprints
+### Phase 3: Customer Features (3-4 weeks)
+- [ ] Multi-tenant improvements
+- [ ] White-label support
+- [ ] Advanced analytics
+- [ ] API documentation
 
-👉 Join us → [Dograh Community Slack](https://join.slack.com/t/dograh-community/shared_invite/zt-3czr47sw5-MSg1J0kJ7IMPOCHF~03auQ)
+### Phase 4: Scale (Ongoing)
+- [ ] Performance optimization
+- [ ] Auto-scaling
+- [ ] Enterprise features
+- [ ] More telephony providers
 
-## 🙌 Contributing
+---
 
-We love contributions! Dograh AI is 100% open source and we intend to keep it that way.
+## 🖥️ How to Run
 
-### Getting Started
+### Prerequisites
+- Docker Desktop installed and running
+- Git
+- API keys: OpenAI, Sarvam, Exotel
 
-- Fork the repository
-- Create your feature branch (git checkout -b feature/AmazingFeature)
-- Commit your changes (git commit -m 'Add some AmazingFeature')
-- Push to the branch (git push origin feature/AmazingFeature)
-- Open a Pull Request
+### Quick Start
 
-## 📄 License
+```powershell
+# 1. Navigate to project
+cd c:\Users\saini\OneDrive\Desktop\onelastmore\audexly
 
-Dograh AI is licensed under the [BSD 2-Clause License](LICENSE)- the same license as projects that were used in building Dograh AI, ensuring compatibility and freedom to use, modify, and distribute.
+# 2. Copy environment template (if not done)
+cp .env.audexly.example .env
 
-## 🏢 About
+# 3. Edit .env with your API keys
+# (Already done with your keys)
 
-Built with ❤️ by **Dograh** (Zansat Technologies Private Limited)
-Founded by YC alumni and exit founders committed to keeping voice AI open and accessible to everyone.
+# 4. Start all services
+docker compose -f docker-compose.audexly.yaml up -d
 
-<br><br><br>
+# 5. Check status
+docker ps
 
-  <p align="center">
-    <a href="https://github.com/dograh-hq/dograh/stargazers">⭐ Star us on GitHub</a> |
-    <a href="https://app.dograh.com">☁️ Try Cloud Version</a> |
-    <a href="https://join.slack.com/t/dograh-community/shared_invite/zt-3czr47sw5-MSg1J0kJ7IMPOCHF~03auQ">💬 Join Slack</a>
-  </p>
+# 6. View logs
+docker compose -f docker-compose.audexly.yaml logs -f
+```
+
+### Access Points
+
+| Service | URL |
+|---------|-----|
+| Dashboard | http://localhost:3010 |
+| API | http://localhost:8000 |
+| API Docs | http://localhost:8000/docs |
+| MinIO Console | http://localhost:9001 |
+
+### Useful Commands
+
+```powershell
+# Stop all services
+docker compose -f docker-compose.audexly.yaml down
+
+# Restart services
+docker compose -f docker-compose.audexly.yaml restart
+
+# View specific logs
+docker logs audexly-api -f
+docker logs audexly-ui -f
+
+# Get tunnel URL (for Exotel webhooks)
+docker logs audexly-tunnel 2>&1 | Select-String "trycloudflare"
+
+# Reset everything (WARNING: deletes data)
+docker compose -f docker-compose.audexly.yaml down -v
+```
+
+---
+
+## 📁 Files & Structure
+
+```
+c:\Users\saini\OneDrive\Desktop\onelastmore\
+├── audexly/                              # Your forked Dograh repository
+│   ├── docker-compose.audexly.yaml       # ✅ Telemetry-disabled config
+│   ├── .env.audexly.example              # ✅ API key template
+│   ├── .env                              # ✅ Your actual keys (gitignored)
+│   ├── AUDEXLY_SETUP_GUIDE.md            # ✅ Setup instructions
+│   │
+│   ├── api/                              # Backend (FastAPI)
+│   │   ├── services/
+│   │   │   ├── telephony/
+│   │   │   │   ├── providers/
+│   │   │   │   │   ├── exotel_provider.py    # ✅ NEW: Exotel integration
+│   │   │   │   │   ├── twilio_provider.py
+│   │   │   │   │   ├── vonage_provider.py
+│   │   │   │   │   └── vobiz_provider.py
+│   │   │   │   └── factory.py            # ✅ MODIFIED: Added Exotel
+│   │   │   └── pipecat/                  # Voice pipeline services
+│   │   ├── routes/                       # API endpoints
+│   │   └── db/                           # Database models
+│   │
+│   ├── ui/                               # Frontend (Next.js)
+│   │   ├── src/
+│   │   │   ├── app/                      # Pages
+│   │   │   └── components/               # React components
+│   │   └── public/                       # Static assets
+│   │
+│   ├── pipecat/                          # Voice engine (submodule)
+│   │   └── src/pipecat/
+│   │       └── serializers/
+│   │           └── exotel.py             # ✅ Exotel audio handling
+│   │
+│   ├── prompts/                          # ✅ Voice agent prompts
+│   │   ├── test_agent.md
+│   │   ├── sales_agent.md
+│   │   ├── support_agent.md
+│   │   ├── survey_agent.md
+│   │   └── appointment_reminder.md
+│   │
+│   └── docs/                             # Documentation
+│       ├── EXOTEL_INTEGRATION_GUIDE.md   # ✅ Exotel setup guide
+│       └── EXOTEL_INTEGRATION_TODO.md    # ✅ Remaining work
+│
+├── AUDEXLY_PLATFORM_PLAN.md              # Overall platform vision
+├── PHASE0_AGENT_TESTING.md               # Current phase objectives
+└── DOGRAH_BUSINESS_ANALYSIS.md           # Business viability analysis
+```
+
+---
+
+## 🗺️ Roadmap
+
+### Immediate (This Week)
+- [x] Fork and clone Dograh
+- [x] Disable telemetry
+- [x] Configure API keys
+- [x] Start services locally
+- [x] Create prompt templates
+- [x] Start Exotel integration
+- [ ] Test voice agent with Web Call
+- [ ] Iterate on prompts
+
+### Short-term (2-4 weeks)
+- [ ] Complete Exotel integration
+- [ ] Rebrand to Audexly
+- [ ] Production deployment
+- [ ] First customer demo
+
+### Medium-term (1-3 months)
+- [ ] Payment integration
+- [ ] Multi-tenant polish
+- [ ] Marketing website
+- [ ] First paying customers
+
+### Long-term (3-6 months)
+- [ ] Scale infrastructure
+- [ ] Add more features
+- [ ] Enterprise customers
+- [ ] Team expansion
+
+---
+
+## 📞 Support & Links
+
+### Repository
+- **Fork**: https://github.com/the-sage-00/dograh-rishi
+- **Original**: https://github.com/dograh-hq/dograh
+
+### API Providers
+- **OpenAI**: https://platform.openai.com/
+- **Sarvam AI**: https://dashboard.sarvam.ai/
+- **Exotel**: https://my.exotel.com/
+
+### Documentation
+- **Dograh Docs**: https://docs.dograh.com/
+- **Pipecat Docs**: https://docs.pipecat.ai/
+
+---
+
+## 📝 Notes
+
+### Security
+- ✅ `.env` file is in `.gitignore` - credentials not in git
+- ✅ Telemetry disabled - no data to external services
+- ✅ All data stored locally in your PostgreSQL/MinIO
+
+### License
+- Dograh: BSD 2-Clause (commercial use allowed)
+- Your modifications: Your choice
+- Requirement: Keep original license in source
+
+---
+
+**Last Updated**: January 18, 2026  
+**Session Duration**: ~1 hour  
+**Status**: Phase 0 - Testing
+
+---
+
+*Built with ❤️ for the Indian market*
