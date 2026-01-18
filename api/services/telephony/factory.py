@@ -12,6 +12,7 @@ from api.db import db_client
 from api.enums import OrganizationConfigurationKey
 from api.services.telephony.base import TelephonyProvider
 from api.services.telephony.providers.cloudonix_provider import CloudonixProvider
+from api.services.telephony.providers.exotel_provider import ExotelProvider
 from api.services.telephony.providers.twilio_provider import TwilioProvider
 from api.services.telephony.providers.vobiz_provider import VobizProvider
 from api.services.telephony.providers.vonage_provider import VonageProvider
@@ -75,6 +76,16 @@ async def load_telephony_config(organization_id: int) -> Dict[str, Any]:
                 "domain_id": config.value.get("domain_id"),
                 "from_numbers": config.value.get("from_numbers", []),
             }
+        elif provider == "exotel":
+            return {
+                "provider": "exotel",
+                "account_sid": config.value.get("account_sid"),
+                "api_key": config.value.get("api_key"),
+                "api_token": config.value.get("api_token"),
+                "subdomain": config.value.get("subdomain", "api.exotel.com"),
+                "from_numbers": config.value.get("from_numbers", []),
+                "webhook_secret": config.value.get("webhook_secret", ""),
+            }
         else:
             raise ValueError(f"Unknown provider in config: {provider}")
 
@@ -115,6 +126,9 @@ async def get_telephony_provider(organization_id: int) -> TelephonyProvider:
     elif provider_type == "cloudonix":
         return CloudonixProvider(config)
 
+    elif provider_type == "exotel":
+        return ExotelProvider(config)
+
     else:
         raise ValueError(f"Unknown telephony provider: {provider_type}")
 
@@ -127,4 +141,5 @@ async def get_all_telephony_providers() -> List[Type[TelephonyProvider]]:
     Returns:
         List of provider classes that can be used for webhook detection
     """
-    return [CloudonixProvider, TwilioProvider, VobizProvider, VonageProvider]
+    return [CloudonixProvider, ExotelProvider, TwilioProvider, VobizProvider, VonageProvider]
+
