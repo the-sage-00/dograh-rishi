@@ -1,0 +1,237 @@
+# =============================================================================
+# AUDEXLY - Voice AI Platform
+# Docker Compose Configuration (Telemetry Disabled)
+# =============================================================================
+# 
+# This is a modified docker-compose file with:
+# - All telemetry DISABLED (no data sent to Dograh)
+# - Configured for your stack: Exotel + Sarvam + OpenAI
+# - Production-ready settings
+#
+# Usage:
+#   docker compose -f docker-compose.audexly.yaml up
+#
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # DATABASE - PostgreSQL 17
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:17
+    container_name: audexly-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: audexly
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    networks:
+      - audexly-network
+
+  # ---------------------------------------------------------------------------
+  # CACHE - Redis 7
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7
+    container_name: audexly-redis
+    ports:
+      - "6379:6379"
+    command: >
+      --requirepass redissecret
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redissecret", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+    networks:
+      - audexly-network
+
+  # ---------------------------------------------------------------------------
+  # STORAGE - MinIO (S3-Compatible)
+  # ---------------------------------------------------------------------------
+  minio:
+    image: minio/minio
+    container_name: audexly-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_API_CORS_ALLOW_ORIGIN: "*"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - audexly-network
+
+  # ---------------------------------------------------------------------------
+  # API - FastAPI Backend (Python)
+  # ---------------------------------------------------------------------------
+  api:
+    image: ${REGISTRY:-ghcr.io/dograh-hq}/dograh-api:latest
+    container_name: audexly-api
+    volumes:
+      - shared-tmp:/tmp
+    environment:
+      # =========================================
+      # CORE APPLICATION CONFIG
+      # =========================================
+      ENVIRONMENT: "local"
+      LOG_LEVEL: "INFO"
+
+      # =========================================
+      # DATABASE (Containerized PostgreSQL)
+      # =========================================
+      DATABASE_URL: "postgresql+asyncpg://postgres:postgres@postgres:5432/audexly"
+
+      # =========================================
+      # CACHE (Containerized Redis)
+      # =========================================
+      REDIS_URL: "redis://:redissecret@redis:6379"
+
+      # =========================================
+      # STORAGE (Containerized MinIO)
+      # =========================================
+      ENABLE_AWS_S3: "false"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "minioadmin"
+      MINIO_SECRET_KEY: "minioadmin"
+      MINIO_BUCKET: "voice-audio"
+      MINIO_SECURE: "false"
+
+      # =========================================
+      # TELEMETRY - ALL DISABLED
+      # =========================================
+      ENABLE_TELEMETRY: "false"
+      ENABLE_TRACING: "false"
+      SENTRY_DSN: ""
+      # No data is sent to Dograh or any third party
+
+      # =========================================
+      # TURN SERVER (For WebRTC - optional)
+      # =========================================
+      TURN_HOST: "${TURN_HOST:-}"
+      TURN_USERNAME: "${TURN_USERNAME:-}"
+      TURN_PASSWORD: "${TURN_PASSWORD:-}"
+
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      cloudflared:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c "import urllib.request; urllib.request.urlopen(''http://localhost:8000/api/v1/health'').read()"',
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - audexly-network
+
+  # ---------------------------------------------------------------------------
+  # UI - Next.js Frontend
+  # ---------------------------------------------------------------------------
+  ui:
+    image: ${REGISTRY:-ghcr.io/dograh-hq}/dograh-ui:latest
+    container_name: audexly-ui
+    environment:
+      # =========================================
+      # BACKEND CONNECTION
+      # =========================================
+      BACKEND_URL: "http://api:8000"
+      NODE_ENV: "oss"
+
+      # =========================================
+      # TELEMETRY - ALL DISABLED
+      # =========================================
+      ENABLE_TELEMETRY: "false"
+      POSTHOG_KEY: ""
+      POSTHOG_HOST: ""
+      SENTRY_DSN: ""
+      # No analytics, no error tracking to external services
+
+      # =========================================
+      # TURN SERVER (For WebRTC - optional)
+      # =========================================
+      TURN_HOST: "${TURN_HOST:-}"
+      TURN_USERNAME: "${TURN_USERNAME:-}"
+      TURN_PASSWORD: "${TURN_PASSWORD:-}"
+
+    ports:
+      - "3010:3010"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:3010 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - audexly-network
+
+  # ---------------------------------------------------------------------------
+  # CLOUDFLARED - Tunnel for external access (for Exotel webhooks)
+  # ---------------------------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: audexly-tunnel
+    command: tunnel --no-autoupdate --url http://api:8000 --metrics 0.0.0.0:2000
+    ports:
+      - "2000:2000"
+    networks:
+      - audexly-network
+
+# =============================================================================
+# VOLUMES
+# =============================================================================
+volumes:
+  postgres_data:
+  redis_data:
+  minio-data:
+    driver: local
+  shared-tmp:
+    driver: local
+
+# =============================================================================
+# NETWORKS
+# =============================================================================
+networks:
+  audexly-network:
+    driver: bridge
